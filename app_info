@@ -1,0 +1,11 @@
+
+pip3 install flask-sqlalchemy
+
+pip install Flask-SQLAlchemy
+
+Creatin the DB under a python enviroment
+Next line should be in the python terminal
+    >>from app import db
+    >>db.create_all()
+What this will do is go to app.config in app.py and creat the db 
+from the db.Model

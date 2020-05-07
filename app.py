@@ -1,6 +1,44 @@
 from flask import Flask, render_template
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
+# Comment for myself: Look for Jedi and  Python Language Server
+# IntelliSense - VS IntelliCode
 app = Flask(__name__)
+
+# Telling flask where the database will be and we can use whatever DB we like
+# /// = Relative Path to app.py
+# //// = Absolute path
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
+# Creating the DB and linking with app.py 
+db = SQLAlchemy(app)
+
+
+# Each class variable is consider as a pice or data on the DB
+class BlogPost(db.Model):
+    # The first thing almost all model should have is an 'id'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    author = db.Column(db.String(20), nullable=False, default='N/A')
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    # __repr__ should return a printable representation of the object
+    def __repr__(self):
+    # __repr__ is more for developers while __str__ is for end users.
+        return 'Blog post ' + str(self.id)
+
+all_posts = [
+    {
+        'title': 'Post 1',
+        'comment': 'Comment 1 for this post',
+        'author': 'Jose'
+    },
+    {
+        'title': 'Post 2',
+        'comment': 'Comment 2 for this post',
+    }
+]
 
 @app.route('/')
 def index():
@@ -8,11 +46,11 @@ def index():
 
 @app.route('/posts')
 def posts():
-    return render_template('posts.html')
+    return render_template('posts.html', posts=all_posts)
 
 @app.route('/home/user/<string:name>/id/<int:id>')
 def hello(name, id):
-    return "Hellor, " + name + " your ID is: " + str(id)
+    return "Hello, " + name + " your ID is: " + str(id)
 
 
 # methods=['GET'] or ['POST'] or ['GET', 'POST']
