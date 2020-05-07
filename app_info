@@ -9,3 +9,17 @@ Next line should be in the python terminal
     >>db.create_all()
 What this will do is go to app.config in app.py and creat the db 
 from the db.Model
+
+Importing the db.Model to the post.db
+    >>from app import BlogPost
+
+All the BLogPost back to me??
+    >>BlogPost.query.all()
+-->[]
+-->Empty
+
+In this case will be current session and add( -db.Model-( -Content of the db.Model- ) )
+>>db.session.add()
+>>BlogPost.query.all()[0].author
+
+>>from app import db, BlogPost

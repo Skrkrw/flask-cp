@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -28,6 +28,8 @@ class BlogPost(db.Model):
     # __repr__ is more for developers while __str__ is for end users.
         return 'Blog post ' + str(self.id)
 
+"""
+Dommie Data
 all_posts = [
     {
         'title': 'Post 1',
@@ -39,15 +41,33 @@ all_posts = [
         'comment': 'Comment 2 for this post',
     }
 ]
+"""
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/posts')
+@app.route('/posts/', methods=['GET', 'POST']) # Allowing Get and Post
 def posts():
-    return render_template('posts.html', posts=all_posts)
+    if request.method == 'POST':
+        post_title = request.form['title']
+        post_content = request.form['content']
+        post_author = request.form['author']
+        # We dont define date time because it is automatically, or default
+        new_post = BlogPost(title=post_title, content=post_content, author=post_author)
+        # Creating a new entry in the DB
+        db.session.add(new_post)
+        # Only after commiting the new entry it will be in the DB
+        # It will create a permanent entry and not just the current session
+        # While the server still running
+        db.session.commit()
+        return redirect('/posts/')
+    else:
+        # Getting all of the BLogPost from DB
+        all_posts = BlogPost.query.order_by(BlogPost.date_created).all()
+        return render_template('posts.html', posts=all_posts)
 
+"""
 @app.route('/home/user/<string:name>/id/<int:id>')
 def hello(name, id):
     return "Hello, " + name + " your ID is: " + str(id)
@@ -57,10 +77,26 @@ def hello(name, id):
 @app.route('/only_get', methods=['GET'])
 def get_req():
     return 'You can only get this webpage!'
+"""
 
+@app.route('/posts/delete/<int:id>')
+def delete_post(id):
+    post = BlogPost.query.get_or_404(id)
+    db.session.delete(post)
+    db.session.commit()
+    return redirect('/posts/')
 
-
-
+@app.route('/posts/edit/<int:id>', methods=['GET', 'POST'])
+def edit(id):
+    post = BlogPost.query.get_or_404(id)
+    if request.method == 'POST':
+        post.title = request.form['title']
+        post.content = request.form['content']
+        post.author = request.form['author']
+        db.session.commit()
+        return redirect('/posts/')
+    else:
+        return render_template('edit.html', post=post)
 
 if __name__ == "__main__":
     # Enables developer mode
