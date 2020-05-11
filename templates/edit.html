@@ -8,7 +8,7 @@
 
     <hr>
     <h2>Create a new BLog Post:</h2>
-    <form action="{{ url_for( 'edit' ) }}" method='POST'>
+    <form action="/posts/edit/{{ post.id }}" method='POST'>
         <legend for="title">Title: </legend><input type="text" name="title" id="title" value="{{ post.title }}" required>   
         <legend for="content">Post: </legend><textarea name="content" id="content" cols="30" rows="10" required>{{ post.content }}</textarea>
         <legend for="content">Author: </legend><input type="text" name="author" id="author" value="{{ post.author }}" >

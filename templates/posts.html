@@ -4,27 +4,32 @@
 {% endblock %}
 
 {% block body %}
-    <h1>All Post</h1>
-    <hr>
-    <h2>Create a new BLog Post:</h2>
-    <form action='/posts' method='POST'>
-        <legend for="title">Title: </legend><input type="text" name="title" id="title" required>   
-        <legend for="content">Post: </legend><textarea name="content" id="content" cols="30" rows="10" required></textarea>
-        <legend for="content">Author: </legend><input type="text" name="author" id="author">
-        <input type="submit" value="Post">
-    </form>
-    <hr>
+    <div class="container content-container">
+        <div class="posts_header_container">
+            <h1 class="posts_header" style="display: inline;">All Post</h1>
+            <a href="/posts/new" class="header_anchor btn btn-success float-right" style="display: inline;">New Post!</a>
+            <!--form class="form-inline mt-2 mt-md-0">
+                <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </!--form-->
+        </div>
+        
+
+        <hr>
 
     {% for post in posts %}
+        <br>
         <h2>{{ post.title }}</h2>
-        {% if post.author %}
-            <h3>By: {{ post.author }}</h3>
-        {% else %}
-            <h3>{{ post.author }}</h3>
-        {% endif %}
         <p>{{ post.content }}</p>
-        <a href='/posts/delete/{{ post.id }}'>Delete</a>
-        <a href='/posts/edit/{{ post.id }}'>Edit</a>
+        {% if post.author %}
+            <small>Written by: {{ post.author }} on {{ post.date_created }}</small>
+        {% else %}
+            <small>Written by: {{ post.author }} on {{ post.date_created }}</small>
+        {% endif %}
+        <br>
+        <a href='/posts/delete/{{ post.id }}' class="btn btn-danger">Delete</a>
+        <a href='/posts/edit/{{ post.id }}'class="btn btn-primary">Edit</a>
+        <hr>
     {% endfor %}
 {% endblock %}
 

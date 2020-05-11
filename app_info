@@ -1,3 +1,13 @@
+Error SQLAlchemy
+    Instance of 'SQLAlchemy' has no 'Column' member
+
+    pip install pylint
+    pip3 install pylint-django
+    pylint --generate-rxfile > .config/pylintrc
+***************************************************************
+
+Some packages needs wheel installed
+pip install wheel
 
 pip3 install flask-sqlalchemy
 

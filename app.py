@@ -13,10 +13,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
 # Creating the DB and linking with app.py 
 db = SQLAlchemy(app)
 
+app.config['SERVER_NAME'] = 'localhost:5000'
 
 # Each class variable is consider as a pice or data on the DB
+# The first thing almost all model should have is an 'id'
 class BlogPost(db.Model):
-    # The first thing almost all model should have is an 'id'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.Text, nullable=False)
@@ -43,9 +44,11 @@ all_posts = [
 ]
 """
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route('/posts/', methods=['GET', 'POST']) # Allowing Get and Post
 def posts():
@@ -79,12 +82,14 @@ def get_req():
     return 'You can only get this webpage!'
 """
 
+
 @app.route('/posts/delete/<int:id>')
 def delete_post(id):
     post = BlogPost.query.get_or_404(id)
     db.session.delete(post)
     db.session.commit()
     return redirect('/posts/')
+
 
 @app.route('/posts/edit/<int:id>', methods=['GET', 'POST'])
 def edit(id):
@@ -97,6 +102,23 @@ def edit(id):
         return redirect('/posts/')
     else:
         return render_template('edit.html', post=post)
+
+@app.route('/posts/new/', methods=["GET", "POST"])
+def new_post():
+
+    if request.method == 'POST':
+        post.title = request.form['title']
+        post.content = request.form['content']
+        post.author = request.form['author']
+        
+        new_post = BlogPost(title=post_title, content=post_content, author=post_author)
+        db.session.add(new_post)
+        db.session.commit()
+
+        return redirect('/posts/')
+    else:
+        return render_template('new_post.html')
+
 
 if __name__ == "__main__":
     # Enables developer mode
